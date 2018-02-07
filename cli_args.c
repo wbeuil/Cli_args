@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cli_args.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wbeuil <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/07 11:53:32 by wbeuil            #+#    #+#             */
+/*   Updated: 2018/02/07 11:53:34 by wbeuil           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cli_args.h"
 
-static int			isNumber(char *str)
+static int			is_number(char *str)
 {
 	int				i;
 
@@ -21,7 +33,7 @@ static int			isNumber(char *str)
 static void			error(t_arg args, int code)
 {
 	if (code == 1)
-		fprintf(stderr, "error: %u type is not defined\n", args.optionsDef->type);
+		fprintf(stderr, "error: %u type is not defined\n", args.options_def->type);
 	else if (code == 2)
 		fprintf(stderr, "error: Unknown option: %s\n", args.argv[args.i]);
 	else if (code == 3)
@@ -29,16 +41,18 @@ static void			error(t_arg args, int code)
 	exit(1);
 }
 
-void				freeOptions(t_opt **options)
+void				free_options(t_opt **options)
 {
+	if (!options || !(*options))
+		return ;
 	if ((*options)->next)
-		freeOptions(&(*options)->next);
+		free_options(&(*options)->next);
 	if ((*options)->value)
 		free((*options)->value);
 	free(*options);
 }
 
-static int			hasDuplicates(t_opt **options, t_opt *new)
+static int			has_duplicates(t_opt **options, t_opt *new)
 {
 	t_opt			*opt;
 
@@ -47,12 +61,12 @@ static int			hasDuplicates(t_opt **options, t_opt *new)
 	{
 		if (opt->name == new->name)
 			return (1);
-		opt = opt->next;	
+		opt = opt->next;
 	}
 	return (0);
 }
 
-void				printOptions(t_opt **options)
+void				print_options(t_opt **options)
 {
 	t_opt			*opt;
 
@@ -64,7 +78,7 @@ void				printOptions(t_opt **options)
 	}
 }
 
-static size_t		lengthOptions(t_opt **options)
+static size_t		length_options(t_opt **options)
 {
 	size_t			i;
 	t_opt			*opt;
@@ -79,15 +93,15 @@ static size_t		lengthOptions(t_opt **options)
 	return (i);
 }
 
-static void			nextOption(t_opt **options, t_opt *new)
+static void			next_option(t_opt **options, t_opt *new)
 {
 	t_opt			*opt;
 
-	if (hasDuplicates(options, new))
+	if (has_duplicates(options, new))
 	{
 		fprintf(stderr, "error: Singular option already set [%s]\n", new->name);
-		freeOptions(options);
-		freeOptions(&new);
+		free_options(options);
+		free_options(&new);
 		exit(1);
 	}
 	opt = *options;
@@ -96,7 +110,7 @@ static void			nextOption(t_opt **options, t_opt *new)
 	opt->next = new;
 }
 
-static t_opt		*getOption(t_arg args, t_def *optionsDef)
+static t_opt		*get_option(t_arg args, t_def *options_def)
 {
 	t_opt			*options;
 	int				length;
@@ -105,18 +119,18 @@ static t_opt		*getOption(t_arg args, t_def *optionsDef)
 
 	if (!(options = (t_opt *)malloc(sizeof(*options))))
 		return (NULL);
-	options->name = optionsDef->name;
+	options->name = options_def->name;
 	length = 0;
-	if (optionsDef->type == OPT_BOOLEAN)
+	if (options_def->type == OPT_BOOLEAN)
 	{
 		if (!(options->value = (int *)malloc(sizeof(int))))
 			return (NULL);
 		*(int *)options->value = 1;
 	}
-	else if (optionsDef->type == OPT_INTEGER)
+	else if (options_def->type == OPT_INTEGER)
 	{
 		j = args.i;
-		while (isNumber(args.argv[++j]))
+		while (is_number(args.argv[++j]))
 			length++;
 		printf("length: %d\n", length);
 		if (!(options->value = (int *)malloc(sizeof(int) * (length))))
@@ -129,11 +143,12 @@ static t_opt		*getOption(t_arg args, t_def *optionsDef)
 			++j;
 			printf("arg: %s k: %d\n", args.argv[j], k);
 			*(int *)options[k].value = atoi(args.argv[j]);
+			printf("lol2\n");
 			k++;
 		}
-		printf("lol\n");
+		printf("lol3\n");
 		k = 0;
-		while (*(int *)options[k].value)
+		while (k < length)
 		{
 			printf("number: %d\n", *(int *)options[k].value);
 			k++;
@@ -143,23 +158,23 @@ static t_opt		*getOption(t_arg args, t_def *optionsDef)
 	return (options);
 }
 
-static int			parseLongOptions(t_arg args, t_opt **options)
+static int			parse_long_options(t_arg args, t_opt **options)
 {
 	size_t			i;
 	t_opt			*tmp;
 	t_def			*def;
 
 	i = -1;
-	def = args.optionsDef;
+	def = args.options_def;
 	while (++i < args.len)
 	{
-		tmp = getOption(args, def);
+		tmp = get_option(args, def);
 		if (tmp && strcmp(args.argv[args.i] + 2, def->name) == 0)
 		{
-			lengthOptions(options) > 0 ? nextOption(options, tmp) : (*options = tmp);
+			length_options(options) > 0 ? next_option(options, tmp) : (*options = tmp);
 			break ;
 		}
-		freeOptions(&tmp);
+		free_options(&tmp);
 		def++;
 	}
 	if (i == args.len)
@@ -167,7 +182,7 @@ static int			parseLongOptions(t_arg args, t_opt **options)
 	return (1);
 }
 
-static int			parseShortOptions(t_arg args, t_opt **options)
+static int			parse_short_options(t_arg args, t_opt **options)
 {
 	int				i;
 	size_t			j;
@@ -178,17 +193,16 @@ static int			parseShortOptions(t_arg args, t_opt **options)
 	while (args.argv[args.i][++i])
 	{
 		j = -1;
-		def = args.optionsDef;
+		def = args.options_def;
 		while (++j < args.len)
 		{
-			tmp = getOption(args, def);
-			// args.i += 3;
+			tmp = get_option(args, def);
 			if (tmp && args.argv[args.i][i] == def->alias)
 			{
-				lengthOptions(options) > 0 ? nextOption(options, tmp) : (*options = tmp);
+				length_options(options) > 0 ? next_option(options, tmp) : (*options = tmp);
 				break ;
 			}
-			freeOptions(&tmp);
+			free_options(&tmp);
 			def++;
 		}
 		if (j == args.len)
@@ -200,7 +214,7 @@ static int			parseShortOptions(t_arg args, t_opt **options)
 	return (1);
 }
 
-static int			checkOptionType(t_arg args)
+static int			check_option_type(t_arg args)
 {
 	size_t			i;
 	t_type			type;
@@ -211,16 +225,16 @@ static int			checkOptionType(t_arg args)
 		type = OPT_BOOLEAN;
 		while (type <= OPT_INTEGER)
 		{
-			if (type == args.optionsDef->type)
+			if (type == args.options_def->type)
 				return (1);
 			type++;
 		}
-		args.optionsDef++;
+		args.options_def++;
 	}
 	return (0);
 }
 
-t_opt				*commandLineArgs(t_arg args)
+t_opt				*command_line_args(t_arg args)
 {
 	t_opt			*options;
 
@@ -231,32 +245,42 @@ t_opt				*commandLineArgs(t_arg args)
 		while (args.argv[++args.i])
 		{
 			printf("next args.i 2: %d\n", args.i);
-			if (!checkOptionType(args))
+			if (!check_option_type(args))
 				error(args, 1);
 			if (args.argv[args.i][0] != '-')
 				error(args, 3);
 			else if (!args.argv[args.i][1])
 				error(args, 2);
 			else if (args.argv[args.i][1] != '-')
-				parseShortOptions(args, &options);
+				parse_short_options(args, &options);
 			else if (!args.argv[args.i][2])
 				error(args, 2);
 			else
-				parseLongOptions(args, &options);
+				parse_long_options(args, &options);
 		}
 	}
 	return (options);
 }
 
-t_arg				initArguments(int argc, char **argv, t_def *optionsDef, size_t len)
+t_arg				init_args(int argc, char **argv, t_def *options_def, size_t len)
 {
 	t_arg			args;
 
 	args.argc = argc;
 	args.argv = argv;
-	args.optionsDef = optionsDef;
+	args.options_def = options_def;
 	args.len = len;
 	args.i = 0;
 	return (args);
 }
 
+t_def				init_def(char *name, char alias, t_type type, char *description)
+{
+	t_def			def;
+
+	def.name = name;
+	def.alias = alias;
+	def.type = type;
+	def.description = description;
+	return (def);
+}
