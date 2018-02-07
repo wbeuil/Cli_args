@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cli_args.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wbeuil <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: William <William@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/07 11:53:39 by wbeuil            #+#    #+#             */
-/*   Updated: 2018/02/07 11:53:42 by wbeuil           ###   ########.fr       */
+/*   Updated: 2018/02/07 22:11:58 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@
 typedef enum			e_type
 {
 	OPT_BOOLEAN,
-	OPT_INTEGER
+	OPT_INTEGER,
+	OPT_STRING
 }						t_type;
 
 typedef struct			s_def
@@ -35,7 +36,9 @@ typedef struct			s_def
 typedef struct			s_opt
 {
 	char				*name;
+	enum e_type			type;
 	void				*value;
+	int					len;
 	struct s_opt		*next;
 }						t_opt;
 
@@ -46,6 +49,7 @@ typedef struct			s_arg
 	struct s_def		*options_def;
 	size_t				len;
 	int					i;
+	int					partial;
 }						t_arg;
 
 t_arg					init_args(int argc, char **argv, t_def *options_def, size_t len);

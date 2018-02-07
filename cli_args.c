@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cli_args.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wbeuil <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: William <William@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/07 11:53:32 by wbeuil            #+#    #+#             */
-/*   Updated: 2018/02/07 11:53:34 by wbeuil           ###   ########.fr       */
+/*   Updated: 2018/02/08 00:46:53 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,39 @@ static int			is_number(char *str)
 	return (1);
 }
 
-static void			error(t_arg args, int code)
+static int			is_option(char *str)
 {
-	if (code == 1)
-		fprintf(stderr, "error: %u type is not defined\n", args.options_def->type);
-	else if (code == 2)
-		fprintf(stderr, "error: Unknown option: %s\n", args.argv[args.i]);
-	else if (code == 3)
-		fprintf(stderr, "error: Unknown value: %s\n", args.argv[args.i]);
-	exit(1);
+	if (!str || str[0] == '-')
+		return (1);
+	return (0);
+}
+
+static t_opt		*unknown_option(t_arg args, t_opt **options)
+{
+	t_opt			*opt;
+
+	opt = *options;
+	while (opt)
+	{
+		if (strcmp(opt->name,"_unknown") == 0)
+			return (opt);
+		opt = opt->next;
+	}
+	opt = (t_opt *)malloc(sizeof(*opt));
+	if (opt)
+	{
+		opt->name = "_unknown";
+		opt->type = OPT_STRING;
+		opt->value = (char **)malloc(sizeof(char *) * 2);
+		if (opt->value)
+		{
+			((char **)opt->value)[0] = args.argv[args.i];
+			((char **)opt->value)[1] = NULL;
+		}
+		opt->len = 1;
+		opt->next = NULL;
+	}
+	return (opt);
 }
 
 void				free_options(t_opt **options)
@@ -69,13 +93,34 @@ static int			has_duplicates(t_opt **options, t_opt *new)
 void				print_options(t_opt **options)
 {
 	t_opt			*opt;
+	int				i;
 
 	opt = *options;
+	printf("{ ");
 	while (opt)
 	{
-		printf("%s: %d\n", opt->name, *(int *)opt->value);
+		i = -1;
+		printf("%s: ", opt->name);
+		if (opt->type == OPT_BOOLEAN)
+			printf("true");
+		else
+		{
+			printf("[");
+			while (++i < opt->len)
+			{
+				if (opt->type == OPT_INTEGER)
+					printf(" %d", ((int *)opt->value)[i]);
+				else if (opt->type == OPT_STRING)
+					printf(" '%s'", ((char **)opt->value)[i]);
+				i == opt->len - 1 ? printf(" ") : printf(",");
+			}
+			printf("]");
+		}
 		opt = opt->next;
+		if (opt)
+			printf(", ");
 	}
+	printf(" }\n");
 }
 
 static size_t		length_options(t_opt **options)
@@ -97,7 +142,7 @@ static void			next_option(t_opt **options, t_opt *new)
 {
 	t_opt			*opt;
 
-	if (has_duplicates(options, new))
+	if (has_duplicates(options, new) && strcmp(new->name,"_unknown"))
 	{
 		fprintf(stderr, "error: Singular option already set [%s]\n", new->name);
 		free_options(options);
@@ -110,17 +155,33 @@ static void			next_option(t_opt **options, t_opt *new)
 	opt->next = new;
 }
 
+static t_arg		error(t_arg args, t_opt **options, int code)
+{
+	if (!args.partial)
+	{
+		if (code == 1)
+			fprintf(stderr, "error: %u type is not defined\n", args.options_def->type);
+		else if (code == 2)
+			fprintf(stderr, "error: Unknown option: %s\n", args.argv[args.i]);
+		else if (code == 3)
+			fprintf(stderr, "error: Unknown value: %s\n", args.argv[args.i]);
+		exit(1);
+	}
+	*options = unknown_option(args, options);
+	return (args);
+}
+
 static t_opt		*get_option(t_arg args, t_def *options_def)
 {
 	t_opt			*options;
-	int				length;
-	int				j;
+	int				len;
 	int				k;
 
 	if (!(options = (t_opt *)malloc(sizeof(*options))))
 		return (NULL);
 	options->name = options_def->name;
-	length = 0;
+	options->type = options_def->type;
+	len = 0;
 	if (options_def->type == OPT_BOOLEAN)
 	{
 		if (!(options->value = (int *)malloc(sizeof(int))))
@@ -129,77 +190,80 @@ static t_opt		*get_option(t_arg args, t_def *options_def)
 	}
 	else if (options_def->type == OPT_INTEGER)
 	{
-		j = args.i;
-		while (is_number(args.argv[++j]))
-			length++;
-		printf("length: %d\n", length);
-		if (!(options->value = (int *)malloc(sizeof(int) * (length))))
+		k = args.i;
+		while (is_number(args.argv[++k]))
+			len++;
+		if (!(options->value = (int *)malloc(sizeof(int) * len)))
 			return (NULL);
-		j = args.i;
-		k = 0;
-		printf("lol\n");
-		while (k < length)
-		{
-			++j;
-			printf("arg: %s k: %d\n", args.argv[j], k);
-			*(int *)options[k].value = atoi(args.argv[j]);
-			printf("lol2\n");
-			k++;
-		}
-		printf("lol3\n");
-		k = 0;
-		while (k < length)
-		{
-			printf("number: %d\n", *(int *)options[k].value);
-			k++;
-		}
+		k = -1;
+		while (++k < len)
+			((int *)options->value)[k] = atoi(args.argv[args.i + k + 1]);
 	}
+	else if (options_def->type == OPT_STRING)
+	{
+		k = args.i;
+		while (!is_option(args.argv[++k]))
+			len++;
+		if (!(options->value = (char **)malloc(sizeof(char *) * (len + 1))))
+			return (NULL);
+		((char **)options->value)[len] = NULL;
+		k = -1;
+		while (++k < len)
+			((char **)options->value)[k] = args.argv[args.i + k + 1];
+	}
+	options->len = len;
 	options->next = NULL;
 	return (options);
 }
 
-static int			parse_long_options(t_arg args, t_opt **options)
+static t_arg		parse_long_options(t_arg args, t_opt **options)
 {
 	size_t			i;
+	int				index;
 	t_opt			*tmp;
 	t_def			*def;
 
 	i = -1;
+	index = args.i;
 	def = args.options_def;
 	while (++i < args.len)
 	{
 		tmp = get_option(args, def);
-		if (tmp && strcmp(args.argv[args.i] + 2, def->name) == 0)
+		if (tmp && strcmp(args.argv[index] + 2, def->name) == 0)
 		{
 			length_options(options) > 0 ? next_option(options, tmp) : (*options = tmp);
+			args.i += tmp->len;
 			break ;
 		}
 		free_options(&tmp);
 		def++;
 	}
 	if (i == args.len)
-		error(args, 2);
-	return (1);
+		args = error(args, options, 2);
+	return (args);
 }
 
-static int			parse_short_options(t_arg args, t_opt **options)
+static t_arg		parse_short_options(t_arg args, t_opt **options)
 {
 	int				i;
+	int				index;
 	size_t			j;
 	t_opt			*tmp;
 	t_def			*def;
 
 	i = 0;
-	while (args.argv[args.i][++i])
+	index = args.i;
+	while (args.argv[index][++i])
 	{
 		j = -1;
 		def = args.options_def;
 		while (++j < args.len)
 		{
 			tmp = get_option(args, def);
-			if (tmp && args.argv[args.i][i] == def->alias)
+			if (tmp && args.argv[index][i] == def->alias)
 			{
 				length_options(options) > 0 ? next_option(options, tmp) : (*options = tmp);
+				args.i += tmp->len;
 				break ;
 			}
 			free_options(&tmp);
@@ -211,7 +275,7 @@ static int			parse_short_options(t_arg args, t_opt **options)
 			exit(1);
 		}
 	}
-	return (1);
+	return (args);
 }
 
 static int			check_option_type(t_arg args)
@@ -223,7 +287,7 @@ static int			check_option_type(t_arg args)
 	while (++i < args.len)
 	{
 		type = OPT_BOOLEAN;
-		while (type <= OPT_INTEGER)
+		while (type <= OPT_STRING)
 		{
 			if (type == args.options_def->type)
 				return (1);
@@ -244,19 +308,18 @@ t_opt				*command_line_args(t_arg args)
 		args.i = 0;
 		while (args.argv[++args.i])
 		{
-			printf("next args.i 2: %d\n", args.i);
 			if (!check_option_type(args))
-				error(args, 1);
+				args = error(args, &options, 1);
 			if (args.argv[args.i][0] != '-')
-				error(args, 3);
+				args = error(args, &options, 3);
 			else if (!args.argv[args.i][1])
-				error(args, 2);
+				args = error(args, &options, 2);
 			else if (args.argv[args.i][1] != '-')
-				parse_short_options(args, &options);
+				args = parse_short_options(args, &options);
 			else if (!args.argv[args.i][2])
-				error(args, 2);
+				args = error(args, &options, 2);
 			else
-				parse_long_options(args, &options);
+				args = parse_long_options(args, &options);
 		}
 	}
 	return (options);
@@ -271,6 +334,7 @@ t_arg				init_args(int argc, char **argv, t_def *options_def, size_t len)
 	args.options_def = options_def;
 	args.len = len;
 	args.i = 0;
+	args.partial = 0;
 	return (args);
 }
 
