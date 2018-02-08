@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:05:15 by William           #+#    #+#             */
-/*   Updated: 2018/02/08 15:50:51 by William          ###   ########.fr       */
+/*   Updated: 2018/02/08 18:11:11 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,18 @@ void				print_options(t_opt **options)
 			printf(", ");
 	}
 	printf(" }\n");
+}
+
+void				free_argv(char **argv)
+{
+	int				i;
+
+	if (!argv)
+		return ;
+	i = -1;
+	while (argv[++i])
+		free(argv[i]);
+	free(argv);
 }
 
 void				free_options(t_opt **options)

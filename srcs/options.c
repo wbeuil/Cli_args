@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:03:38 by William           #+#    #+#             */
-/*   Updated: 2018/02/08 15:50:52 by William          ###   ########.fr       */
+/*   Updated: 2018/02/08 18:44:25 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,8 @@ t_opt				*unknown_option(t_arg args, t_opt **options)
 		if (strcmp(opt->name, "_unknown") == 0)
 		{
 			opt->value = (char **)realloc(opt->value, sizeof(char *) * (opt->len + 2));
-			if (opt->value)
-			{
-				((char **)opt->value)[opt->len] = args.argv[args.i];
-				((char **)opt->value)[opt->len + 1] = NULL;
-			}
+			((char **)opt->value)[opt->len] = args.argv[args.i];
+			((char **)opt->value)[opt->len + 1] = NULL;
 			opt->len++;
 			return (*options);
 		}
@@ -38,11 +35,8 @@ t_opt				*unknown_option(t_arg args, t_opt **options)
 		opt->name = "_unknown";
 		opt->type = OPT_STRING;
 		opt->value = (char **)malloc(sizeof(char *) * 2);
-		if (opt->value)
-		{
-			((char **)opt->value)[0] = args.argv[args.i];
-			((char **)opt->value)[1] = NULL;
-		}
+		((char **)opt->value)[0] = args.argv[args.i];
+		((char **)opt->value)[1] = NULL;
 		opt->len = 1;
 		opt->next = NULL;
 	}
@@ -73,15 +67,13 @@ t_opt				*get_option(t_arg args, t_def *options_def)
 	int				len;
 	int				k;
 
-	if (!(options = (t_opt *)malloc(sizeof(*options))))
-		return (NULL);
+	options = (t_opt *)malloc(sizeof(*options));
 	options->name = options_def->name;
 	options->type = options_def->type;
 	len = 0;
 	if (options_def->type == OPT_BOOLEAN)
 	{
-		if (!(options->value = (int *)malloc(sizeof(int))))
-			return (NULL);
+		options->value = (int *)malloc(sizeof(int));
 		*(int *)options->value = 1;
 	}
 	else if (options_def->type == OPT_INTEGER)
@@ -91,8 +83,7 @@ t_opt				*get_option(t_arg args, t_def *options_def)
 			len++;
 		if (!options_def->multiple)
 			len = 1;
-		if (!(options->value = (int *)malloc(sizeof(int) * len)))
-			return (NULL);
+		options->value = (int *)malloc(sizeof(int) * len);
 		k = -1;
 		while (++k < len)
 			((int *)options->value)[k] = atoi(args.argv[args.i + k + 1]);
@@ -104,8 +95,7 @@ t_opt				*get_option(t_arg args, t_def *options_def)
 			len++;
 		if (!options_def->multiple)
 			len = 1;
-		if (!(options->value = (char **)malloc(sizeof(char *) * (len + 1))))
-			return (NULL);
+		options->value = (char **)malloc(sizeof(char *) * (len + 1));
 		((char **)options->value)[len] = NULL;
 		k = -1;
 		while (++k < len)

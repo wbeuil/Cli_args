@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 14:58:36 by William           #+#    #+#             */
-/*   Updated: 2018/02/08 15:50:57 by William          ###   ########.fr       */
+/*   Updated: 2018/02/08 17:11:25 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,24 +68,4 @@ size_t				length_options(t_opt **options)
 		opt = opt->next;
 	}
 	return (i);
-}
-
-int					check_option_type(t_arg args)
-{
-	size_t			i;
-	t_type			type;
-
-	i = -1;
-	while (++i < args.len)
-	{
-		type = OPT_BOOLEAN;
-		while (type <= OPT_STRING)
-		{
-			if (type == args.options_def->type)
-				return (1);
-			type++;
-		}
-		args.options_def++;
-	}
-	return (0);
 }

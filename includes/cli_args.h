@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:05:25 by William           #+#    #+#             */
-/*   Updated: 2018/02/08 15:14:38 by William          ###   ########.fr       */
+/*   Updated: 2018/02/08 18:09:36 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,13 @@ int						check_option_type(t_arg args);
 */
 
 char					**sort_argv(char **argv);
-void					free_argv(char **argv);
 
 /*
 ** Struct functions
 */
 
 t_arg					init_args(char **argv, t_def *options_def, size_t len);
+void					free_argv(char **argv);
 t_def					init_def(char *name, char alias, t_type type, char *description);
 void					free_options(t_opt **options);
 void					print_options(t_opt **options);

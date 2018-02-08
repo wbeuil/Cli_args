@@ -6,21 +6,11 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 14:47:47 by William           #+#    #+#             */
-/*   Updated: 2018/02/08 15:50:47 by William          ###   ########.fr       */
+/*   Updated: 2018/02/08 18:41:43 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cli_args.h"
-
-void				free_argv(char **argv)
-{
-	int				i;
-
-	i = -1;
-	while (argv[++i])
-		free(argv[i]);
-	free(argv);
-}
 
 static char			**fill_argv(char **sort, char **argv)
 {
@@ -68,8 +58,7 @@ static char			**malloc_argv(char **sort, char **argv)
 			j = 0;
 			while (argv[i][++j])
 			{
-				if (!(sort[i + l] = (char *)malloc(sizeof(**sort) * 3)))
-					return (NULL);
+				sort[i + l] = (char *)malloc(sizeof(**sort) * 3);
 				sort[i + l][0] = '-';
 				sort[i + l][2] = '\0';
 				if (argv[i][j + 1])
@@ -82,8 +71,7 @@ static char			**malloc_argv(char **sort, char **argv)
 			k = 0;
 			while (argv[i][++j])
 				k++;
-			if (!(sort[i + l] = (char *)malloc(sizeof(**sort) * (k + 1))))
-				return (NULL);
+			sort[i + l] = (char *)malloc(sizeof(**sort) * (k + 1));
 			sort[i + l][k] = '\0';
 		}
 	}
@@ -118,11 +106,9 @@ char				**sort_argv(char **argv)
 	char			**sort;
 
 	count = count_argv(argv);
-	if (!(sort = (char **)malloc(sizeof(*sort) * (count + 1))))
-		return (NULL);
+	sort = (char **)malloc(sizeof(*sort) * (count + 1));
 	sort[count] = NULL;
-	if (!(sort = malloc_argv(sort, argv)))
-		return (NULL);
+	sort = malloc_argv(sort, argv);
 	sort = fill_argv(sort, argv);
 	return (sort);
 }
