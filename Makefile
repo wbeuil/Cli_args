@@ -6,9 +6,14 @@ RM			=	/bin/rm -f
 
 CFLAGS		=	-Wall -Wextra -Werror -g
 
-SRCS		=	cli_args.c
+DIR			=	./srcs
 
-OBJS		=	${SRCS:.c=.o}
+INCLUDE		=	./includes
+
+SRCS		=	cli_args.c argv.c options.c \
+				utilities.c struct.c
+
+OBJS		=	$(addprefix $(DIR)/, ${SRCS:.c=.o})
 
 all: $(NAME)
 
