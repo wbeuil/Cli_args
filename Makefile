@@ -11,7 +11,9 @@ DIR			=	./srcs
 INCLUDE		=	./includes
 
 SRCS		=	cli_args.c argv.c options.c \
-				utilities.c struct.c
+				utilities.c print.c init.c \
+				free.c boolean.c integer.c \
+				string.c definitions.c
 
 OBJS		=	$(addprefix $(DIR)/, ${SRCS:.c=.o})
 

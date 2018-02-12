@@ -6,17 +6,34 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 14:58:36 by William           #+#    #+#             */
-/*   Updated: 2018/02/08 17:11:25 by William          ###   ########.fr       */
+/*   Updated: 2018/02/12 16:23:09 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cli_args.h"
+#include <string.h>
+#include <ctype.h>
+#include <stdio.h>
+
+/*
+** Print an error message for the failure of memory allocation.
+*/
+
+void				fail_malloc(void)
+{
+	fprintf(stderr, "error: Fail malloc\n");
+	exit(1);
+}
+
+/*
+** Find if the string represents a number.
+*/
 
 int					is_number(char *str)
 {
 	int				i;
 
-	if (!str)
+	if (!str || strcmp(str, "-") == 0)
 		return (0);
 	i = 0;
 	if (str[0] == '-')
@@ -30,16 +47,31 @@ int					is_number(char *str)
 	return (1);
 }
 
+/*
+** Find if the string represents a short or a long option.
+*/
+
 int					is_option(char *str)
 {
 	if (!str)
 		return (0);
-	else if (str && str[0] == '-' && str[1] != '-')
+	else if (str[0] == '-' && str[1] != '-'
+		&& !is_number(str + 1))
 		return (1);
-	else if (str && str[0] == '-' && str[1] == '-')
+	else if (str[0] == '-' && !str[1])
+		return (-1);
+	else if (str[0] == '-' && str[1] == '-'
+		&& !is_number(str + 2))
 		return (2);
+	else if (str[0] == '-' && str[1] == '-'
+		&& !str[2])
+		return (-1);
 	return (0);
 }
+
+/*
+** Search for duplicates inside the options variable.
+*/
 
 int					has_duplicates(t_opt **options, t_opt *new)
 {
@@ -54,6 +86,10 @@ int					has_duplicates(t_opt **options, t_opt *new)
 	}
 	return (0);
 }
+
+/*
+** Return the size of the options variable.
+*/
 
 size_t				length_options(t_opt **options)
 {
