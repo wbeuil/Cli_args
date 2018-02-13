@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 16:07:24 by William           #+#    #+#             */
-/*   Updated: 2018/02/09 21:00:35 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 10:56:05 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void				print_options(t_opt **options)
 		i = -1;
 		printf("%s: ", opt->name);
 		if (opt->type == OPT_BOOLEAN)
-			print_boolean();
+			print_boolean(opt);
 		else if (opt->type == OPT_INTEGER)
 			print_integer(opt);
 		else if (opt->type == OPT_STRING)

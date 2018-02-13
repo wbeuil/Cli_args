@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/13 09:35:46 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 09:47:23 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 11:11:28 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ t_arg				*error(t_arg *args, t_opt **options, int code)
 		free_args(args);
 		exit(EXIT_FAILURE);
 	}
-	*options = unknown_option(args, options);
+	if (!(*options = unknown_option(args, options)))
+		return (NULL);
 	return (args);
 }
 
@@ -64,6 +65,6 @@ void				definition_error(t_arg *args, int code)
 
 void				fail_malloc(void)
 {
-	fprintf(stderr, "error: Fail malloc\n");
+	fprintf(stderr, "error: Failed to allocate memory\n");
 	exit(EXIT_FAILURE);
 }

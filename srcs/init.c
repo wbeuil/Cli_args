@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 16:08:45 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 09:26:10 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 11:07:08 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ t_opt				*init_options(char *name, t_type type, int multiple)
 {
 	t_opt			*opt;
 
-	opt = (t_opt *)malloc(sizeof(*opt));
+	if (!(opt = (t_opt *)malloc(sizeof(*opt))))
+		return (NULL);
 	opt->name = name;
 	opt->type = type;
 	opt->value = NULL;
@@ -42,6 +43,8 @@ t_arg				*init_args(char **argv, t_def *option_defs, size_t size)
 
 	args = (t_arg *)malloc(sizeof(*args));
 	sorting_argv = sort_argv(argv);
+	if (!args || !sorting_argv)
+		fail_malloc();
 	args->argv = sorting_argv;
 	args->option_defs = option_defs;
 	if ((ret = check_definitions(option_defs, size)) < 0)
@@ -56,10 +59,11 @@ t_arg				*init_args(char **argv, t_def *option_defs, size_t size)
 ** Initialization of the option definitions variable.
 */
 
-t_def				*init_options_def(size_t size)
+t_def				*init_option_defs(size_t size)
 {
 	t_def			*option_defs;
 
-	option_defs = (t_def *)malloc(sizeof(*option_defs) * size);
+	if (!(option_defs = (t_def *)malloc(sizeof(*option_defs) * size)))
+		fail_malloc();
 	return (option_defs);
 }

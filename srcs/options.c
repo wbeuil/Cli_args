@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:03:38 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 09:47:29 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 11:12:27 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ t_opt				*unknown_option(t_arg *args, t_opt **options)
 	{
 		if (strcmp(opt->name, "_unknown") == 0)
 		{
-			opt->value = (char **)realloc(opt->value, sizeof(char *) * (opt->size + 2));
+			if (!(opt->value = (char **)realloc(opt->value, sizeof(char *) * (opt->size + 2))))
+				return (NULL);
 			((char **)opt->value)[opt->size] = args->argv[args->i];
 			((char **)opt->value)[opt->size + 1] = NULL;
 			opt->size++;
@@ -67,6 +68,8 @@ t_opt				*unknown_option(t_arg *args, t_opt **options)
 	}
 	opt = init_options("_unknown", OPT_STRING, 1);
 	opt->value = (char **)malloc(sizeof(char *) * 2);
+	if (!opt || !opt->value)
+		return (NULL);
 	((char **)opt->value)[0] = args->argv[args->i];
 	((char **)opt->value)[1] = NULL;
 	opt->size = 1;
@@ -84,7 +87,8 @@ t_opt				*get_option(t_arg *args, t_def *option_defs)
 	t_opt			*options;
 	size_t			size;
 
-	options = init_options(option_defs->name, option_defs->type, option_defs->multiple);
+	if (!(options = init_options(option_defs->name, option_defs->type, option_defs->multiple)))
+		return (NULL);
 	size = 0;
 	if (options->type == OPT_BOOLEAN)
 	{
@@ -100,6 +104,8 @@ t_opt				*get_option(t_arg *args, t_def *option_defs)
 		size = string_size(args, option_defs);
 		options->value = string_value(args, size);
 	}
+	if (!options->value)
+		return (NULL);
 	options->size = size;
 	return (options);
 }

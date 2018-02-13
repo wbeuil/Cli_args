@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:05:25 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 10:10:02 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 11:04:05 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int						check_definitions(t_def *option_defs, size_t size);
 
 t_opt					*init_options(char *name, t_type type, int multiple);
 t_arg					*init_args(char **argv, t_def *option_defs, size_t size);
-t_def					*init_options_def(size_t size);
+t_def					*init_option_defs(size_t size);
 
 /*
 ** Free functions
@@ -130,7 +130,7 @@ char					**sort_argv(char **argv);
 */
 
 void					print_options(t_opt **options);
-void					print_boolean(void);
+void					print_boolean(t_opt *opt);
 void					print_integer(t_opt *opt);
 void					print_string(t_opt *opt);
 

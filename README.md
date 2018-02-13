@@ -48,7 +48,7 @@ Parsing is strict by default - an exception is thrown if the user sets a singula
 
 ```
 args = init_args(argv, option_defs, size);
-args.partial = 1;
+args->partial = 1;
 options = command_line_args(args);
 ```
 

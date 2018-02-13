@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 16:30:17 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 09:26:31 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 11:07:52 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ int					*integer_value(t_arg *args, size_t size)
 	int				*value;
 	size_t			i;
 
-	value = (int *)malloc(sizeof(*value) * size);
+	if (!(value = (int *)malloc(sizeof(*value) * size)))
+		return (NULL);
 	i = -1;
 	while (++i < size)
 		value[i] = atoi(args->argv[args->i + 1 + i]);

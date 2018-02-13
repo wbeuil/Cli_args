@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:12:20 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 10:11:42 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 11:15:15 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int					main(int argc, char **argv)
 	if (argc > 1)
 	{
 		size = 3;
-		option_defs = init_options_def(size);
+		option_defs = init_option_defs(size);
 		option_defs[0] = add_def("help", "h", OPT_BOOLEAN, NULL);
 		option_defs[1] = add_def("file", "f", OPT_STRING, NULL);
 		option_defs[1].multiple = 1;

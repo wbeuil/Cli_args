@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:05:13 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 09:49:31 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 11:08:28 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ static t_arg		*parse_long_options(t_arg *args, t_opt **options)
 	{
 		if (strcmp(args->argv[index] + 2, defs->name) == 0)
 		{
-			tmp = get_option(args, defs);
+			if (!(tmp = get_option(args, defs)))
+				return (NULL);
 			add_option(args, options, tmp);
 			args->i += tmp->size;
 			break ;
@@ -64,7 +65,8 @@ static t_arg		*parse_short_options(t_arg *args, t_opt **options)
 	{
 		if (defs->alias && args->argv[index][1] == defs->alias[0])
 		{
-			tmp = get_option(args, defs);
+			if (!(tmp = get_option(args, defs)))
+				return (NULL);
 			add_option(args, options, tmp);
 			args->i += tmp->size;
 			break ;
@@ -99,6 +101,8 @@ t_opt				*command_line_args(t_arg *args)
 			args = error(args, &options, 1);
 		else
 			args = parse_long_options(args, &options);
+		if (!args)
+			fail_malloc();
 	}
 	return (options);
 }

@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 16:19:45 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 09:24:41 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 11:01:53 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@
 ** Print true instead of 1.
 */
 
-void				print_boolean(void)
+void				print_boolean(t_opt *opt)
 {
-	printf("true");
+	if (*(int *)opt->value == 1)
+		printf("true");
 }
 
 /*
@@ -30,7 +31,8 @@ int					*boolean_value(void)
 {
 	int				*value;
 
-	value = (int *)malloc(sizeof(int));
+	if (!(value = (int *)malloc(sizeof(int))))
+		return (NULL);
 	*value = 1;
 	return (value);
 }

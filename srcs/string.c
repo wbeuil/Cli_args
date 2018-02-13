@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 17:24:07 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 09:27:43 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 11:13:30 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,8 @@ char				**string_value(t_arg *args, size_t size)
 	char			**value;
 	size_t			i;
 
-	value = (char **)malloc(sizeof(*value) * (size + 1));
+	if (!(value = (char **)malloc(sizeof(*value) * (size + 1))))
+		return (NULL);
 	value[size] = NULL;
 	i = -1;
 	while (++i < size)
