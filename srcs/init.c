@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 16:08:45 by William           #+#    #+#             */
-/*   Updated: 2018/02/12 16:35:54 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 09:26:10 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ t_opt				*init_options(char *name, t_type type, int multiple)
 {
 	t_opt			*opt;
 
-	if (!(opt = (t_opt *)malloc(sizeof(*opt))))
-		return (NULL);
+	opt = (t_opt *)malloc(sizeof(*opt));
 	opt->name = name;
 	opt->type = type;
 	opt->value = NULL;
@@ -35,19 +34,17 @@ t_opt				*init_options(char *name, t_type type, int multiple)
 ** Initialization of the argument variable.
 */
 
-t_arg				*init_args(char **argv, t_def *options_def, size_t size)
+t_arg				*init_args(char **argv, t_def *option_defs, size_t size)
 {
 	t_arg			*args;
 	char			**sorting_argv;
 	int				ret;
 
-	if (!(args = (t_arg *)malloc(sizeof(*args))))
-		return (NULL);
-	if (!(sorting_argv = sort_argv(argv)))
-		return (NULL);
+	args = (t_arg *)malloc(sizeof(*args));
+	sorting_argv = sort_argv(argv);
 	args->argv = sorting_argv;
-	args->options_def = options_def;
-	if ((ret = check_definitions(options_def, size)) < 0)
+	args->option_defs = option_defs;
+	if ((ret = check_definitions(option_defs, size)) < 0)
 		definition_error(args, ret);
 	args->size = size;
 	args->i = 0;
@@ -61,9 +58,8 @@ t_arg				*init_args(char **argv, t_def *options_def, size_t size)
 
 t_def				*init_options_def(size_t size)
 {
-	t_def			*options_def;
+	t_def			*option_defs;
 
-	if (!(options_def = (t_def *)malloc(sizeof(*options_def) * size)))
-		return (NULL);
-	return (options_def);
+	option_defs = (t_def *)malloc(sizeof(*option_defs) * size);
+	return (option_defs);
 }

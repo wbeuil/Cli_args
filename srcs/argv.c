@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 14:47:47 by William           #+#    #+#             */
-/*   Updated: 2018/02/12 16:11:54 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 09:24:24 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@ static char			*init_str(int len, char *arg)
 	int				i;
 	char			*str;
 
-	if (!(str = (char *)malloc(sizeof(*str) * (len + 1))))
-		return (NULL);
+	str = (char *)malloc(sizeof(*str) * (len + 1));
 	str[len] = '\0';
 	if (arg)
 	{
@@ -57,16 +56,14 @@ static char			**malloc_argv(char **sort, char **argv)
 			j = 0;
 			while (argv[i][++j])
 			{
-				if (!(sort[i + k] = init_str(2, NULL)))
-					return (NULL);
+				sort[i + k] = init_str(2, NULL);
 				sort[i + k][1] = argv[i][j];
 				if (argv[i][j + 1])
 					k++;
 			}
 		}
 		else
-			if (!(sort[i + k] = init_str(strlen(argv[i]), argv[i])))
-				return (NULL);
+			sort[i + k] = init_str(strlen(argv[i]), argv[i]);
 	}
 	return (sort);
 }
@@ -111,10 +108,8 @@ char				**sort_argv(char **argv)
 	char			**sort;
 
 	count = count_argv(argv);
-	if (!(sort = (char **)malloc(sizeof(*sort) * (count + 1))))
-		return (NULL);
+	sort = (char **)malloc(sizeof(*sort) * (count + 1));
 	sort[count] = NULL;
-	if (!(sort = malloc_argv(sort, argv)))
-		return (NULL);
+	sort = malloc_argv(sort, argv);
 	return (sort);
 }

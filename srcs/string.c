@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 17:24:07 by William           #+#    #+#             */
-/*   Updated: 2018/02/12 16:34:48 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 09:27:43 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void				print_string(t_opt *opt)
 ** Return the size of the array of strings.
 */
 
-size_t				string_size(t_arg *args, t_def *options_def)
+size_t				string_size(t_arg *args, t_def *option_defs)
 {
 	int				i;
 	size_t			size;
@@ -51,7 +51,7 @@ size_t				string_size(t_arg *args, t_def *options_def)
 	size = 0;
 	while (args->argv[++i] && !is_option(args->argv[i]))
 		size++;
-	if (!options_def->multiple && size > 1)
+	if (!option_defs->multiple && size > 1)
 		size = 1;
 	return (size);
 }
@@ -65,8 +65,7 @@ char				**string_value(t_arg *args, size_t size)
 	char			**value;
 	size_t			i;
 
-	if (!(value = (char **)malloc(sizeof(*value) * (size + 1))))
-		return (NULL);
+	value = (char **)malloc(sizeof(*value) * (size + 1));
 	value[size] = NULL;
 	i = -1;
 	while (++i < size)

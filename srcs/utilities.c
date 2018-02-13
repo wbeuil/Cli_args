@@ -6,24 +6,13 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 14:58:36 by William           #+#    #+#             */
-/*   Updated: 2018/02/12 16:23:09 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 09:36:37 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cli_args.h"
 #include <string.h>
 #include <ctype.h>
-#include <stdio.h>
-
-/*
-** Print an error message for the failure of memory allocation.
-*/
-
-void				fail_malloc(void)
-{
-	fprintf(stderr, "error: Fail malloc\n");
-	exit(1);
-}
 
 /*
 ** Find if the string represents a number.

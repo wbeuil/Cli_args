@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 16:19:45 by William           #+#    #+#             */
-/*   Updated: 2018/02/12 16:19:58 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 09:24:41 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ int					*boolean_value(void)
 {
 	int				*value;
 
-	if (!(value = (int *)malloc(sizeof(int))))
-		return (NULL);
+	value = (int *)malloc(sizeof(int));
 	*value = 1;
 	return (value);
 }

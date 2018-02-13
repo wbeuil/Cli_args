@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:05:25 by William           #+#    #+#             */
-/*   Updated: 2018/02/12 16:22:29 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 10:10:02 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@
 
 typedef enum			e_type
 {
-	OPT_BOOLEAN,
-	OPT_INTEGER,
-	OPT_STRING
+	OPT_BOOLEAN	= 1,
+	OPT_INTEGER	= 2,
+	OPT_STRING	= 3
 }						t_type;
 
 typedef struct			s_def
@@ -49,7 +49,7 @@ typedef struct			s_arg
 {
 	int					argc;
 	char				**argv;
-	struct s_def		*options_def;
+	struct s_def		*option_defs;
 	size_t				size;
 	int					i;
 	int					partial;
@@ -66,15 +66,14 @@ t_opt					*command_line_args(t_arg *args);
 */
 
 t_def					add_def(char *name, char *alias, t_type type, char *description);
-int						check_definitions(t_def *options_def, size_t size);
-void					definition_error(t_arg *args, int code);
+int						check_definitions(t_def *option_defs, size_t size);
 
 /*
 ** Init functions
 */
 
 t_opt					*init_options(char *name, t_type type, int multiple);
-t_arg					*init_args(char **argv, t_def *options_def, size_t size);
+t_arg					*init_args(char **argv, t_def *option_defs, size_t size);
 t_def					*init_options_def(size_t size);
 
 /*
@@ -82,13 +81,22 @@ t_def					*init_options_def(size_t size);
 */
 
 void					free_args(t_arg *args);
+void					free_argv(char **argv);
 void					free_options(t_opt **options);
+
+/*
+** Error functions
+*/
+
+t_arg					*error(t_arg *args, t_opt **options, int code);
+void					definition_error(t_arg *args, int code);
+void					fail_malloc(void);
 
 /*
 ** Options functions
 */
 
-t_opt					*get_option(t_arg *args, t_def *options_def);
+t_opt					*get_option(t_arg *args, t_def *option_defs);
 void					add_option(t_arg *args, t_opt **options, t_opt *new);
 t_opt					*unknown_option(t_arg *args, t_opt **options);
 
@@ -98,9 +106,9 @@ t_opt					*unknown_option(t_arg *args, t_opt **options);
 
 int						*boolean_value(void);
 int						*integer_value(t_arg *args, size_t size);
-size_t					integer_size(t_arg *args, t_def *options_def, t_opt **options);
+size_t					integer_size(t_arg *args, t_def *option_defs, t_opt **options);
 char					**string_value(t_arg *args, size_t size);
-size_t					string_size(t_arg *args, t_def *options_def);
+size_t					string_size(t_arg *args, t_def *option_defs);
 
 /*
 ** Utilities functions
@@ -110,7 +118,6 @@ int						is_number(char *str);
 int						is_option(char *str);
 int						has_duplicates(t_opt **options, t_opt *new);
 size_t					length_options(t_opt **options);
-void					fail_malloc(void);
 
 /*
 ** Argv function

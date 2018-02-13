@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 16:30:17 by William           #+#    #+#             */
-/*   Updated: 2018/02/12 16:34:16 by William          ###   ########.fr       */
+/*   Updated: 2018/02/13 09:26:31 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void				print_integer(t_opt *opt)
 ** Return the size of the array of integers.
 */
 
-size_t				integer_size(t_arg *args, t_def *options_def, t_opt **options)
+size_t				integer_size(t_arg *args, t_def *option_defs, t_opt **options)
 {
 	int				i;
 	size_t			size;
@@ -80,7 +80,7 @@ size_t				integer_size(t_arg *args, t_def *options_def, t_opt **options)
 			exit(1);
 		}
 	}
-	if (!options_def->multiple && size > 1)
+	if (!option_defs->multiple && size > 1)
 		size = 1;
 	return (size);
 }
@@ -94,8 +94,7 @@ int					*integer_value(t_arg *args, size_t size)
 	int				*value;
 	size_t			i;
 
-	if (!(value = (int *)malloc(sizeof(*value) * size)))
-		return (NULL);
+	value = (int *)malloc(sizeof(*value) * size);
 	i = -1;
 	while (++i < size)
 		value[i] = atoi(args->argv[args->i + 1 + i]);
