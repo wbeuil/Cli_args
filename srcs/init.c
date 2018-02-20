@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 16:08:45 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 11:07:08 by William          ###   ########.fr       */
+/*   Updated: 2018/02/16 11:30:36 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,29 @@ t_arg				*init_args(char **argv, t_def *option_defs, size_t size)
 t_def				*init_option_defs(size_t size)
 {
 	t_def			*option_defs;
+	size_t			i;
 
 	if (!(option_defs = (t_def *)malloc(sizeof(*option_defs) * size)))
 		fail_malloc();
+	i = -1;
+	while (++i < size)
+		option_defs[i] = add_def(NULL, NULL, OPT_INIT);
 	return (option_defs);
+}
+
+/*
+** Add a definition variable.
+*/
+
+t_def				add_def(char *name, char *alias, t_type type)
+{
+	t_def			def;
+
+	def.name = name;
+	def.alias = alias;
+	def.type = type;
+	def.multiple = 0;
+	def.description = NULL;
+	def.label = NULL;
+	return (def);
 }

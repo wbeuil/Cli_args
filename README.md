@@ -4,7 +4,7 @@ A simple library to parse command-line options in C. This module is inspired by 
 ## Getting Started
 Before using the library (cli_args.a), you need to create it with:
 ```
-make
+$ make
 ```
 
 ## Synopsis
@@ -37,10 +37,9 @@ print_options(&options);
 { help: true, timeout: 1000, file: [ 'one.js', 'two.js' ] }
 ```
 
-Finally don't forget to free all variables:
+Finally don't forget to free the options variable when you don't need it anymore:
 ```
 free_options(&options);
-free_args(args);
 ```
 
 ## Advanced usage
@@ -51,6 +50,13 @@ args = init_args(argv, option_defs, size);
 args->partial = 1;
 options = command_line_args(args);
 ```
+
+## Usage guide generation
+A usage guide (typically printed when `--help` is set) can be generated using [command-line-usage](https://github.com/wbeuil/cli_usage). See the examples below and [read the documentation](https://github.com/wbeuil/cli_usage) for instructions how to create them.
+
+A typical usage guide example.
+
+![usage](https://github.com/wbeuil/cli_usage/raw/master/example.png)
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details

@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/13 09:35:46 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 11:11:28 by William          ###   ########.fr       */
+/*   Updated: 2018/02/14 12:10:17 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ void				definition_error(t_arg *args, int code)
 		fprintf(stderr, "error: Two or more option definitions have the same alias\n");
 	else if (code == -7)
 		fprintf(stderr, "error: Invalid option definitions: the type property is required on each definition\n");
+	else if (code == -8)
+		fprintf(stderr, "error: Invalid option definitions: the option definitions array has the wrong size\n");
 	free_args(args);
 	exit(EXIT_FAILURE);
 }

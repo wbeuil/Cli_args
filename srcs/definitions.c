@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 11:52:34 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 10:12:10 by William          ###   ########.fr       */
+/*   Updated: 2018/02/14 12:19:23 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,21 @@
 #include <string.h>
 
 /*
-** Add a definition variable.
+** Verify if the option definitions array has the right number
+** of definitions.
 */
 
-t_def				add_def(char *name, char *alias, t_type type, char *description)
+static int			is_full(t_def *option_defs, size_t size)
 {
-	t_def			def;
+	size_t			i;
 
-	def.name = name;
-	def.alias = alias;
-	def.type = type;
-	def.multiple = 0;
-	def.description = description;
-	return (def);
+	i = -1;
+	while (++i < size)
+	{
+		if (option_defs[i].type == OPT_INIT)
+			return (0);
+	}
+	return (1);
 }
 
 /*
@@ -89,6 +91,8 @@ int					check_definitions(t_def *option_defs, size_t size)
 {
 	size_t			i;
 
+	if (!is_full(option_defs, size))
+		return (-8);
 	i = -1;
 	while (++i < size)
 	{

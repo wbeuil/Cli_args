@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:05:25 by William           #+#    #+#             */
-/*   Updated: 2018/02/13 11:04:05 by William          ###   ########.fr       */
+/*   Updated: 2018/02/16 11:29:57 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 
 typedef enum			e_type
 {
+	OPT_INIT	= -1,
+	OPT_NULL	= 0,
 	OPT_BOOLEAN	= 1,
 	OPT_INTEGER	= 2,
 	OPT_STRING	= 3
@@ -33,6 +35,7 @@ typedef struct			s_def
 	enum e_type			type;
 	int					multiple;
 	char				*description;
+	char				*label;
 }						t_def;
 
 typedef struct			s_opt
@@ -65,7 +68,7 @@ t_opt					*command_line_args(t_arg *args);
 ** Options definitions functions
 */
 
-t_def					add_def(char *name, char *alias, t_type type, char *description);
+t_def					add_def(char *name, char *alias, t_type type);
 int						check_definitions(t_def *option_defs, size_t size);
 
 /*
