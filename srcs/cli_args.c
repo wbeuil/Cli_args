@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:05:13 by William           #+#    #+#             */
-/*   Updated: 2018/02/14 15:19:00 by William          ###   ########.fr       */
+/*   Updated: 2018/02/22 20:50:23 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,5 @@ t_opt				*command_line_args(t_arg *args)
 		if (!args)
 			fail_malloc();
 	}
-	free_args(args);
 	return (options);
 }

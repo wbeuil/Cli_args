@@ -6,7 +6,7 @@
 /*   By: William <wbeuil@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 15:12:20 by William           #+#    #+#             */
-/*   Updated: 2018/02/14 15:19:06 by William          ###   ########.fr       */
+/*   Updated: 2018/02/22 20:50:26 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,11 @@ int					main(int argc, char **argv)
 		option_defs[1].multiple = 1;
 		option_defs[2] = add_def("timeout", "t", OPT_INTEGER);
 		args = init_args(argv, option_defs, size);
+		args->partial = 1;
 		options = command_line_args(args);
 		print_options(&options);
 		free_options(&options);
+		free_args(args);
 	}
 	return (0);
 }
